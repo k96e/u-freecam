@@ -71,6 +71,9 @@ namespace freecam
         freeTransHelper_->setLocalRotation({0, 0, 0, 1});
         freeTransHelper_->setLocalScale({1, 1, 1});
 
+        // Start in stereo right away if it was left on
+        updateStereo();
+
         // Set Cursor
 #ifndef __ANDROID__
         CursorUtils::backup();
@@ -125,7 +128,10 @@ namespace freecam
             updateRotate();
             updateRoll();
             updateAttachMode();
+            updateStereoAdjust();
         }
+        // After zoom, so the eyes pick up the current FoV
+        updateStereo();
 #ifndef __ANDROID__
         if (InputUtils::GetMouseButtonDown(2) || InputUtils::GetKeyDown(user_config::freecam::keybind::UIMode))
         {

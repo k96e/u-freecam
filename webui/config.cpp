@@ -152,6 +152,19 @@ namespace
             RET_CAMERA_MODE_STR(MainCamera)
         }
     }
+    // Stereo Format
+    std::string jsonify(const user_config::freecam::stereo::StereoFormat &v)
+    {
+#define RET_STEREO_FORMAT_STR(format)                                                                                  \
+    case user_config::freecam::stereo::StereoFormat::format:                                                           \
+        return QUOTE(format);
+
+        switch (v)
+        {
+            RET_STEREO_FORMAT_STR(HalfSBS)
+            RET_STEREO_FORMAT_STR(FullSBS)
+        }
+    }
     // PlayerLoop Type
     std::string jsonify(const user_config::core::player_loop::Type &v)
     {
@@ -223,6 +236,14 @@ namespace
         RET_STR_CAMERA_MODE(MainCamera)
         return std::nullopt;
     }
+    std::optional<user_config::freecam::stereo::StereoFormat> stereo_format_from_literal(const std::string &literal)
+    {
+#define RET_STR_STEREO_FORMAT(str)                                                                                     \
+    if (literal == #str) return user_config::freecam::stereo::StereoFormat::str;
+        RET_STR_STEREO_FORMAT(HalfSBS)
+        RET_STR_STEREO_FORMAT(FullSBS)
+        return std::nullopt;
+    }
     std::optional<user_config::core::player_loop::Type> player_loop_type_from_literal(const std::string &literal)
     {
 #define RET_STR_PLAYER_LOOP_TYPE(str)                                                                                  \
@@ -239,6 +260,11 @@ namespace
     if (auto it = value->find(#Literal); it != value->end())                                                           \
         if (const auto value = it->second.as<std::string>())                                                           \
             if (auto mode = camera_mode_from_literal(*value)) Literal = *mode;
+// Stereo Format
+#define SF(Literal)                                                                                                    \
+    if (auto it = value->find(#Literal); it != value->end())                                                           \
+        if (const auto value = it->second.as<std::string>())                                                           \
+            if (auto format = stereo_format_from_literal(*value)) Literal = *format;
 // Key
 #define K(Literal)                                                                                                     \
     if (auto it = value->find(#Literal); it != value->end())                                                           \
@@ -359,6 +385,7 @@ namespace user_config
             os << "\"Mode\":" << jsonify(Mode) << ",";
             os << "\"DisableOrigCam\":" << jsonify(DisableOrigCam) << ",";
             os << "\"property\":" << property::to_json() << ",";
+            os << "\"stereo\":" << stereo::to_json() << ",";
             os << "\"keybind\":" << keybind::to_json();
             os << "}";
             return os.str();
@@ -370,6 +397,7 @@ namespace user_config
                 M(Mode)
                 B(DisableOrigCam)
                 if (auto it = value->find("property"); it != value->end()) property::from_json(it->second);
+                if (auto it = value->find("stereo"); it != value->end()) stereo::from_json(it->second);
                 if (auto it = value->find("keybind"); it != value->end()) keybind::from_json(it->second);
             }
         }
@@ -396,6 +424,34 @@ namespace user_config
                     N(RollSpeed)
                     N(BaseMoveSpeed)
                     N(MaxMoveSpeed)
+                }
+            }
+        }
+
+        namespace stereo
+        {
+            // ====== user_config::freecam::stereo ======
+            std::string to_json()
+            {
+                std::ostringstream os;
+                os << "{";
+                os << "\"Enabled\":" << jsonify(Enabled) << ",";
+                os << "\"Format\":" << jsonify(Format) << ",";
+                os << "\"Separation\":" << jsonify(Separation) << ",";
+                os << "\"Convergence\":" << jsonify(Convergence) << ",";
+                os << "\"SwapEyes\":" << jsonify(SwapEyes);
+                os << "}";
+                return os.str();
+            }
+            void from_json(const Json &data)
+            {
+                if (const auto value = data.as<Json::Object>())
+                {
+                    B(Enabled)
+                    SF(Format)
+                    N(Separation)
+                    N(Convergence)
+                    B(SwapEyes)
                 }
             }
         }
@@ -432,7 +488,13 @@ namespace user_config
                 os << "\"PinAnchor\":" << jsonify(keybind::PinAnchor) << ",";
 
                 os << "\"UIMode\":" << jsonify(keybind::UIMode) << ",";
-                os << "\"AttachMode\":" << jsonify(keybind::AttachMode);
+                os << "\"AttachMode\":" << jsonify(keybind::AttachMode) << ",";
+
+                os << "\"ToggleStereo\":" << jsonify(keybind::ToggleStereo) << ",";
+                os << "\"SeparationUp\":" << jsonify(keybind::SeparationUp) << ",";
+                os << "\"SeparationDown\":" << jsonify(keybind::SeparationDown) << ",";
+                os << "\"ConvergenceUp\":" << jsonify(keybind::ConvergenceUp) << ",";
+                os << "\"ConvergenceDown\":" << jsonify(keybind::ConvergenceDown);
                 os << "}";
                 return os.str();
             }
@@ -442,11 +504,12 @@ namespace user_config
                 {
                     // clang-format off
                     K(ToggleFreeCam)
-                    K(Down) K(Forward) K(Back) K(Left) K(Right) K(SpeedUp)
-                    K(RotateUp) K(RotateDown) K(RotateLeft) K(RollLeft) K(RollRight) K(ResetRoll)
+                    K(Up) K(Down) K(Forward) K(Back) K(Left) K(Right) K(SpeedUp)
+                    K(RotateUp) K(RotateDown) K(RotateLeft) K(RotateRight) K(RollLeft) K(RollRight) K(ResetRoll)
                     K(ZoomMode) K(ZoomIn) K(ZoomOut)
                     K(PinAnchor)
                     K(UIMode) K(AttachMode)
+                    K(ToggleStereo) K(SeparationUp) K(SeparationDown) K(ConvergenceUp) K(ConvergenceDown)
                     // clang-format on
                 }
             }

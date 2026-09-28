@@ -11,12 +11,20 @@ using namespace umod::debug;
 
 namespace freecam::helper
 {
-    auto selectGameObject() -> Transform *
+    auto isDestroyed(UnityObject *obj) -> bool
     {
-        const auto screenCenter = Vector2(Screen::get_width() / 2.f, Screen::get_height() / 2.f);
-        const auto cam = getMaxDepthCamera();
+        using umod::UTYPE::UMethod;
+        static UMethod *const method =
+            UnityResolve::Get("UnityEngine.CoreModule.dll")->Get("Object")->Get<UMethod>("op_Equality");
+        return !obj || method->Invoke<bool>(obj, nullptr);
+    }
 
-        const auto ray = cam->ScreenPointToRay(screenCenter);
+    auto selectGameObject(Transform *view) -> Transform *
+    {
+        // Cast along the view axis rather than through the screen center, which stereo output splits across two eyes
+        Ray ray{};
+        ray.m_vOrigin = view->GetPosition();
+        ray.m_vDirection = view->GetForward();
         const auto hit = std::make_unique<RaycastHit>();
         if (Physics::Raycast(ray, &*hit, 100.f))
         {

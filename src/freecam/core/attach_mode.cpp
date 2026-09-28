@@ -65,7 +65,7 @@ namespace freecam
         {
             if (!kFlags.attach_mode && anchorTrans_->GetParent() == nullptr)
             {
-                if (const auto target = helper::selectGameObject())
+                if (const auto target = helper::selectGameObject(freeTransHelper_->getUTransform()))
                     enterAttachMode(target);
                 else
                     logger::info("Target not found");

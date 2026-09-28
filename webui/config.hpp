@@ -33,6 +33,12 @@ namespace user_config
             void from_json(const json::Json &data);
         }
 
+        namespace stereo
+        {
+            std::string to_json();
+            void from_json(const json::Json &data);
+        }
+
         namespace keybind
         {
             std::string to_json();

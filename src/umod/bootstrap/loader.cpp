@@ -4,6 +4,7 @@
 #include "umod/feature.hpp"
 #include "umod/memory/hook.hpp"
 #include "umod/memory/scanner.hpp"
+#include "umod/runtime/backend.hpp"
 
 #include <vector>
 
@@ -157,6 +158,7 @@ namespace umod::bootstrap
             if (module == nullptr) return false;
 
             UnityResolve::Init(module, mode);
+            unity_runtime::Backend = mode;
 
             return true;
         }

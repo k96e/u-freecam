@@ -94,6 +94,45 @@
           }
         }
       },
+      "stereo": {
+        "type": "object",
+        "label": "SBS 3D",
+        "desc": "左右并排（Side-by-Side）立体输出",
+        "properties": {
+          "Enabled": {
+            "type": "bool",
+            "label": "启用",
+            "desc": "开启 SBS 3D 输出"
+          },
+          "Format": {
+            "type": "enum",
+            "label": "输出格式",
+            "desc": "HalfSBS：每眼压缩至半宽，用于 3D 电视/眼镜；FullSBS：每眼保持原比例，用于裸眼观看或双倍宽度显示",
+            "values": ["HalfSBS", "FullSBS"]
+          },
+          "Separation": {
+            "type": "range",
+            "label": "眼距",
+            "desc": "左右眼间距（世界单位），越大立体感越强",
+            "min": 0,
+            "max": 1,
+            "step": 0.001
+          },
+          "Convergence": {
+            "type": "range",
+            "label": "汇聚距离",
+            "desc": "位于该距离的物体显示在屏幕平面上，更近的物体出屏，更远的物体入屏（世界单位）",
+            "min": 0.1,
+            "max": 100,
+            "step": 0.1
+          },
+          "SwapEyes": {
+            "type": "bool",
+            "label": "交换左右",
+            "desc": "交换左右画面，用于交叉眼观看"
+          }
+        }
+      },
       "keybind": {
         "type": "object",
         "label": "键位",
@@ -223,6 +262,36 @@
             "type": "enum",
             "label": "切换依附模式",
             "desc": "开启/退出依附模式",
+            "values": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "UpArrow", "DownArrow", "RightArrow", "LeftArrow", "Shift_L", "Shift_R", "Ctrl_L", "Ctrl_R", "Backspace", "Tab", "Enter", "Space", "Minus", "Equals", "Esc"]
+          },
+          "ToggleStereo": {
+            "type": "enum",
+            "label": "切换 SBS 3D",
+            "desc": "开启/关闭 SBS 3D 输出",
+            "values": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "UpArrow", "DownArrow", "RightArrow", "LeftArrow", "Shift_L", "Shift_R", "Ctrl_L", "Ctrl_R", "Backspace", "Tab", "Enter", "Space", "Minus", "Equals", "Esc"]
+          },
+          "SeparationUp": {
+            "type": "enum",
+            "label": "增大眼距",
+            "desc": "增大左右眼间距",
+            "values": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "UpArrow", "DownArrow", "RightArrow", "LeftArrow", "Shift_L", "Shift_R", "Ctrl_L", "Ctrl_R", "Backspace", "Tab", "Enter", "Space", "Minus", "Equals", "Esc"]
+          },
+          "SeparationDown": {
+            "type": "enum",
+            "label": "减小眼距",
+            "desc": "减小左右眼间距",
+            "values": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "UpArrow", "DownArrow", "RightArrow", "LeftArrow", "Shift_L", "Shift_R", "Ctrl_L", "Ctrl_R", "Backspace", "Tab", "Enter", "Space", "Minus", "Equals", "Esc"]
+          },
+          "ConvergenceUp": {
+            "type": "enum",
+            "label": "推远汇聚",
+            "desc": "推远汇聚距离",
+            "values": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "UpArrow", "DownArrow", "RightArrow", "LeftArrow", "Shift_L", "Shift_R", "Ctrl_L", "Ctrl_R", "Backspace", "Tab", "Enter", "Space", "Minus", "Equals", "Esc"]
+          },
+          "ConvergenceDown": {
+            "type": "enum",
+            "label": "拉近汇聚",
+            "desc": "拉近汇聚距离",
             "values": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "UpArrow", "DownArrow", "RightArrow", "LeftArrow", "Shift_L", "Shift_R", "Ctrl_L", "Ctrl_R", "Backspace", "Tab", "Enter", "Space", "Minus", "Equals", "Esc"]
           }
         }
