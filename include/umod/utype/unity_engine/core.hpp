@@ -2,6 +2,9 @@
 
 #include "umod/utype/utype.hpp"
 
+#include <optional>
+#include <utility>
+
 namespace umod::UTYPE::unity_engine
 {
     using Vector2 = UnityResolve::UnityType::Vector2;
@@ -11,6 +14,9 @@ namespace umod::UTYPE::unity_engine
     using String = UnityResolve::UnityType::String;
     using Screen = UnityResolve::UnityType::Screen;
     using Color = UnityResolve::UnityType::Color;
+    using Rect = UnityResolve::UnityType::Rect;
+    using Ray = UnityResolve::UnityType::Ray;
+    using Matrix4x4 = UnityResolve::UnityType::Matrix4x4;
 
     using UnityObject = UnityResolve::UnityType::UnityObject;
 
@@ -63,6 +69,12 @@ namespace umod::UTYPE::unity_engine
                 method = UnityResolve::Get("UnityEngine.CoreModule.dll")->Get("Object")->Get<UMethod>("op_Equality");
             return method->Invoke<bool>(this, nullptr);
         }
+        inline auto SetName(const std::string &name) -> void
+        {
+            static UMethod *const method =
+                UnityResolve::Get("UnityEngine.CoreModule.dll")->Get("Object")->Get<UMethod>("set_name");
+            if (method) method->Invoke<void>(this, String::New(name));
+        }
     };
 
     class Component : public UTYPE::Component
@@ -98,6 +110,38 @@ namespace umod::UTYPE::unity_engine
         UNITY_METHOD(void, set_orthographic, (bool v), v)
         UNITY_METHOD(float, get_orthographicSize, ())
         UNITY_METHOD(void, set_orthographicSize, (float size), size)
+
+        // Used by the stereo output. IL2CPP builds strip the ones a game never touches, so these report a missing
+        // method instead of crashing on it.
+        inline auto SetRect(const Rect &rect) -> bool
+        {
+            static UMethod *const method = FindStructSetter(GetUClass(), "rect");
+            return InvokeStructSetter(method, this, rect);
+        }
+        inline auto SetProjectionMatrix(const Matrix4x4 &matrix) -> bool
+        {
+            static UMethod *const method = FindStructSetter(GetUClass(), "projectionMatrix");
+            return InvokeStructSetter(method, this, matrix);
+        }
+        inline auto SetAspect(const float aspect) -> bool
+        {
+            static UMethod *const method = GetUClass()->Get<UMethod>("set_aspect");
+            if (!method) return false;
+            method->Invoke<void>(this, aspect);
+            return true;
+        }
+        inline auto GetClipPlanes() -> std::optional<std::pair<float, float>>
+        {
+            static UMethod *const nearMethod = GetUClass()->Get<UMethod>("get_nearClipPlane");
+            static UMethod *const farMethod = GetUClass()->Get<UMethod>("get_farClipPlane");
+            if (!nearMethod || !farMethod) return std::nullopt;
+            return std::pair{nearMethod->Invoke<float>(this), farMethod->Invoke<float>(this)};
+        }
+        inline auto IsOrthographic() -> bool
+        {
+            static UMethod *const method = GetUClass()->Get<UMethod>("get_orthographic");
+            return method && method->Invoke<bool>(this);
+        }
     };
 
     // struct Quaternion : public UTYPE::Quaternion

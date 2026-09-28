@@ -91,6 +91,25 @@ To access it locally, simply open http://localhost:23333.
 | Speed down                  | -         |
 | Freeze speed / Resume speed | Backspace |
 
+| SBS 3D                         | Keybind                         |
+| ------------------------------ | ------------------------------- |
+| Toggle SBS 3D output           | B                               |
+| Increase / Decrease separation | L / J (hold Shift_L for faster) |
+| Push / Pull convergence        | I / K (hold Shift_L for faster) |
+
+## SBS 3D Output
+
+While the freecam is on, its view can be output as side-by-side stereo for 3D TVs, AR/VR glasses, or free viewing. The parameters live under "自由镜头 (FreeCam) → SBS 3D" in the WebUI:
+
+- **Format**: `HalfSBS` squeezes each eye into half the width for the display to stretch back, which suits most 3D TVs and glasses. `FullSBS` keeps each eye's aspect ratio, for parallel/cross-eyed free viewing or displays running the game at double width (e.g. 3840×1080).
+- **Separation**: Distance between the eyes, in game world units. World scale differs between games, so the default of 0.064 may need tuning.
+- **Convergence**: Objects at this distance sit on the screen plane; nearer ones pop out and farther ones recede.
+- **Swap eyes**: Swaps the left and right images, for cross-eyed viewing.
+
+> [!NOTE]
+> Stereo output renders the scene twice, so expect a higher performance cost.\
+> Game UI drawn as Screen Space - Overlay is not split per eye, and neither is anything the game draws with its other cameras (UI, effects).
+
 ## Tested Game
 
 - [Blue Archive](https://youtu.be/40Od_dHH5oY)

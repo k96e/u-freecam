@@ -4,6 +4,7 @@
 #include "umod/runtime/helper/transform.hpp"
 #include "umod/utype/unity_engine/core.hpp"
 
+#include <array>
 #include <memory>
 
 namespace freecam
@@ -15,8 +16,16 @@ namespace freecam
         MainCamera
     };
 
+    enum class StereoFormat
+    {
+        HalfSBS, // Each eye squeezed into half the width, for 3D TVs / glasses that stretch it back
+        FullSBS  // Each eye keeps its own aspect, for free viewing or double-width displays
+    };
+
     constexpr auto kFreeArchorName = "UE_Freecam_Archor";
     constexpr auto kFreeCameraName = "UE_Freecam";
+    constexpr auto kFreeCameraLeftName = "UE_Freecam_L";
+    constexpr auto kFreeCameraRightName = "UE_Freecam_R";
 
     class FreeCamera
     {
@@ -49,9 +58,12 @@ namespace freecam
             bool ui_layer = false;
             bool zoom_mode = false;
             bool attach_mode = false;
+            bool stereo_adjusting = false;
         } kFlags;
 
         umod::UTYPE::unity_engine::Camera *freeCam_{};
+        // Left and right eye cameras under freeCam_ while stereo output is on, freeCam_ itself stops rendering then
+        std::array<umod::UTYPE::unity_engine::Camera *, 2> eyeCams_{};
         umod::UTYPE::unity_engine::Transform *anchorTrans_{};
         std::unique_ptr<CameraHelper> cameraHelper_;
         std::unique_ptr<TransformHelper> freeTransHelper_;
@@ -69,8 +81,14 @@ namespace freecam
         auto updateRoll() -> void;
         auto updateZoom() -> void;
         auto updateAttachMode() -> void;
+        auto updateStereoAdjust() -> void;
+        auto updateStereo() -> void;
 
         auto enterAttachMode(umod::UTYPE::unity_engine::Transform *target) -> void;
         auto exitAttachMode() -> void;
+
+        auto enableStereo() -> bool;
+        auto disableStereo() -> void;
+        auto applyStereo() -> bool;
     };
 }

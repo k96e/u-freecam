@@ -49,6 +49,18 @@ namespace user_config
             inline float MaxMoveSpeed = 50.f; // 最大移动速度
         }
 
+        // SBS 3D 输出
+        namespace stereo
+        {
+            using StereoFormat = ::freecam::StereoFormat;
+
+            inline bool Enabled = false;                        // 启用 SBS 3D 输出
+            inline StereoFormat Format = StereoFormat::HalfSBS; // 输出格式
+            inline float Separation = 0.064f;                   // 眼距（世界单位）
+            inline float Convergence = 10.f;                    // 汇聚距离（世界单位）
+            inline bool SwapEyes = false;                       // 交换左右画面
+        }
+
         // 键位
         namespace keybind
         {
@@ -84,6 +96,13 @@ namespace user_config
 
             inline Key UIMode = U;     // 开启/关闭 UI 模式
             inline Key AttachMode = T; // 开启/退出依附模式
+
+            // SBS 3D
+            inline Key ToggleStereo = B;    // 开启/关闭 SBS 3D 输出
+            inline Key SeparationUp = L;    // 增大眼距
+            inline Key SeparationDown = J;  // 减小眼距
+            inline Key ConvergenceUp = I;   // 推远汇聚距离
+            inline Key ConvergenceDown = K; // 拉近汇聚距离
         }
     }
 
